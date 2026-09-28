@@ -1,0 +1,325 @@
+:root {
+  --ink: #dff3ff;
+  --dim: rgba(190, 226, 245, 0.62);
+  --cyan: #5ef2ff;
+  --amber: #ffb545;
+  --rose: #ff5f9e;
+  --lime: #a6ff6e;
+  --violet: #b18cff;
+  --panel: rgba(8, 20, 30, 0.72);
+  --edge: rgba(94, 242, 255, 0.22);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #03080d;
+  color: var(--ink);
+  font-family: var(--mono);
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(120% 90% at 50% 0%, #0a1b28 0%, #050d15 45%, #02060a 100%);
+}
+
+#fx {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* CRT dressing: scanlines + vignette, pure CSS, no per-frame cost */
+#glass {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(0, 0, 0, 0) 0 2px,
+      rgba(0, 0, 0, 0.20) 2px 4px),
+    radial-gradient(120% 100% at 50% 50%,
+      rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.62) 100%);
+  mix-blend-mode: multiply;
+}
+
+#app {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 3vw, 40px);
+  gap: 14px;
+  overflow: auto;
+}
+.screen.on { display: flex; animation: rise 0.34s ease both; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------------- typography */
+.kicker {
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin: 0;
+}
+.title {
+  margin: 0;
+  font-size: clamp(30px, 8.2vw, 92px);
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  text-align: center;
+  font-weight: 800;
+  color: #eafcff;
+  text-shadow:
+    0 0 6px rgba(94, 242, 255, 0.75),
+    0 0 26px rgba(94, 242, 255, 0.42),
+    0 0 62px rgba(94, 242, 255, 0.22);
+}
+.title em {
+  display: block;
+  font-style: normal;
+  color: var(--amber);
+  text-shadow:
+    0 0 6px rgba(255, 181, 69, 0.7),
+    0 0 30px rgba(255, 181, 69, 0.4);
+}
+.rule {
+  width: min(560px, 88vw);
+  height: 1px;
+  border: 0;
+  margin: 4px 0;
+  background: linear-gradient(90deg, transparent, var(--edge), transparent);
+}
+.lede {
+  max-width: 62ch;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(12px, 1.55vw, 14px);
+  line-height: 1.8;
+  color: var(--dim);
+}
+.mono-tag { font-size: 11px; letter-spacing: 0.2em; color: var(--dim); }
+
+/* ------------------------------------------------------------------ buttons */
+button {
+  font: inherit;
+  color: var(--ink);
+  background: rgba(94, 242, 255, 0.06);
+  border: 1px solid var(--edge);
+  border-radius: 3px;
+  padding: 12px 22px;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.16s, box-shadow 0.16s, transform 0.08s, color 0.16s;
+}
+button:hover {
+  background: rgba(94, 242, 255, 0.14);
+  box-shadow: 0 0 22px rgba(94, 242, 255, 0.28), inset 0 0 18px rgba(94, 242, 255, 0.08);
+}
+button:active { transform: translateY(1px); }
+button:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+button.primary {
+  color: #021016;
+  background: linear-gradient(180deg, #8ef6ff, #35c9e0);
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 0 30px rgba(94, 242, 255, 0.42);
+}
+button.primary:hover { box-shadow: 0 0 44px rgba(94, 242, 255, 0.7); }
+button.ghost { background: transparent; color: var(--dim); }
+button.ghost:hover { color: var(--ink); }
+
+#chrome {
+  position: fixed;
+  right: 12px;
+  bottom: 10px;
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+}
+#chrome button { padding: 7px 12px; font-size: 10px; }
+
+/* -------------------------------------------------------------- title screen */
+.stats {
+  display: flex;
+  gap: clamp(14px, 5vw, 54px);
+  margin: 2px 0 6px;
+}
+.stat { text-align: center; }
+.stat b {
+  display: block;
+  font-size: clamp(20px, 4vw, 32px);
+  color: var(--amber);
+  text-shadow: 0 0 18px rgba(255, 181, 69, 0.5);
+}
+.stat span { font-size: 10px; letter-spacing: 0.28em; color: var(--dim); }
+
+/* --------------------------------------------------------- briefing + result */
+.card {
+  width: min(720px, 94vw);
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+  padding: clamp(18px, 3.4vw, 34px);
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.55), inset 0 0 60px rgba(94, 242, 255, 0.03);
+  backdrop-filter: blur(3px);
+}
+.card h2 {
+  margin: 6px 0 10px;
+  font-size: clamp(20px, 4.4vw, 38px);
+  letter-spacing: 0.1em;
+  color: #eafcff;
+  text-shadow: 0 0 20px rgba(94, 242, 255, 0.4);
+}
+.readout {
+  display: flex;
+  justify-content: center;
+  gap: clamp(16px, 6vw, 60px);
+  margin: 6px 0 2px;
+  flex-wrap: wrap;
+}
+.readout div { text-align: center; }
+.readout b {
+  display: block;
+  font-size: clamp(26px, 6vw, 54px);
+  color: var(--lime);
+  text-shadow: 0 0 22px rgba(166, 255, 110, 0.45);
+}
+.readout span { font-size: 10px; letter-spacing: 0.26em; color: var(--dim); }
+#fin-grade {
+  color: var(--amber);
+  text-shadow: 0 0 26px rgba(255, 181, 69, 0.6);
+}
+
+/* ------------------------------------------------------------- play screen */
+#play { justify-content: stretch; gap: 10px; }
+
+#hud {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 20px);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  flex-wrap: wrap;
+}
+#termbar { color: var(--cyan); text-shadow: 0 0 14px rgba(94, 242, 255, 0.5); }
+#score {
+  font-size: 16px;
+  color: var(--amber);
+  text-shadow: 0 0 16px rgba(255, 181, 69, 0.5);
+  min-width: 4ch;
+  text-align: right;
+}
+#pips { display: flex; gap: 5px; }
+#pips i {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  display: block;
+}
+#pips i.on { background: var(--lime); box-shadow: 0 0 10px var(--lime); }
+#pips i.cur { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); animation: blink 1.1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+#spacer { flex: 1; }
+
+#prompt {
+  font-size: clamp(12px, 2vw, 15px);
+  color: var(--ink);
+  text-align: center;
+  min-height: 1.4em;
+}
+#hint { font-size: 10px; letter-spacing: 0.22em; color: var(--dim); text-align: center; }
+
+#stagewrap {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+  background: rgba(3, 10, 16, 0.55);
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+#stage { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: rgba(2, 7, 11, 0.62);
+  overflow: auto;
+}
+#overlay.on { display: flex; }
+.panel { text-align: center; display: grid; gap: 12px; justify-items: center; }
+.btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.state { margin: 0; font-size: 10px; letter-spacing: 0.3em; color: var(--amber); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: min(620px, 92vw); }
+.opts.wide { max-width: min(860px, 96vw); }
+.choice {
+  min-width: 46px;
+  padding: 12px 14px;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+.choice.hit {
+  background: var(--lime);
+  color: #05200a;
+  border-color: transparent;
+  box-shadow: 0 0 34px rgba(166, 255, 110, 0.65);
+}
+.choice.miss { color: var(--rose); border-color: var(--rose); }
+
+.sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ compact */
+@media (max-width: 620px) {
+  #hud { font-size: 10px; letter-spacing: 0.12em; }
+  #hud #spacer { display: none; }
+  .card { padding: 16px; }
+  .lede { font-size: 12px; line-height: 1.7; }
+  #stagewrap { min-height: 190px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen.on { animation: none; }
+  #pips i.cur { animation: none; }
+  button { transition: none; }
+}

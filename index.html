@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TOTAL SIGNAL ACADEMY</title>
+<meta name="description" content="A five-term academy for reading signals. Timing, memory, separation, decipherment and the archive. Everything you hear is generated live in the browser.">
+<meta name="theme-color" content="#03080d">
+<meta property="og:title" content="TOTAL SIGNAL ACADEMY">
+<meta property="og:description" content="Five terms. Five ways of hearing. Graduate with a rank.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2303080d'/%3E%3Cpath d='M2 16h4l3-9 4 18 4-13 3 8 3-4h7' fill='none' stroke='%235ef2ff' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<main id="app">
+
+  <!-- ============================================================ TITLE -->
+  <section class="screen on" data-screen="title">
+    <p class="kicker">Est. whenever the band is quiet</p>
+    <h1 class="title">TOTAL SIGNAL<em>ACADEMY</em></h1>
+    <hr class="rule">
+    <p class="lede">
+      Five terms. Five ways of hearing. You will be handed a probe, a relay,
+      a crowded spectrum, a voice that does not exist, and a vault of heat.
+      Graduate with a rank and the academy will stop teaching you.
+    </p>
+    <div class="stats">
+      <div class="stat"><b id="title-best">0</b><span>BEST SCORE</span></div>
+      <div class="stat"><b id="title-unlocked">1</b><span>TERMS OPEN</span></div>
+      <div class="stat"><b>5000</b><span>MAXIMUM</span></div>
+    </div>
+    <button id="title-go" class="primary">ENROL</button>
+    <p class="mono-tag">Headphones recommended &middot; press M to mute</p>
+  </section>
+
+  <!-- =========================================================== BRIEF -->
+  <section class="screen" data-screen="brief">
+    <div class="card">
+      <p class="kicker" id="br-term">TERM I</p>
+      <h2 id="br-title">CALIBRATION</h2>
+      <p class="mono-tag" id="br-rank">RANK ON COMPLETION</p>
+      <hr class="rule">
+      <p class="lede" id="br-text"></p>
+      <p class="mono-tag" style="margin-top:10px" id="br-controls"></p>
+      <div style="height:12px"></div>
+      <button id="br-go" class="primary">BEGIN</button>
+    </div>
+  </section>
+
+  <!-- ============================================================= PLAY -->
+  <section class="screen" data-screen="play">
+    <header id="hud">
+      <span id="termbar">TERM I</span>
+      <span id="pips"></span>
+      <span id="spacer"></span>
+      <span>SCORE <b id="score">0000</b></span>
+      <button id="abort" class="ghost">LEAVE TERM</button>
+    </header>
+    <p id="prompt" aria-live="polite"></p>
+    <div id="stagewrap">
+      <canvas id="stage"></canvas>
+      <div id="overlay"></div>
+    </div>
+    <p id="hint"></p>
+  </section>
+
+  <!-- =========================================================== RESULT -->
+  <section class="screen" data-screen="result">
+    <div class="card">
+      <p class="kicker" id="res-term">TERM COMPLETE</p>
+      <h2 id="res-rank">CADET</h2>
+      <hr class="rule">
+      <div class="readout">
+        <div><b id="res-score">0</b><span>CUMULATIVE SCORE</span></div>
+      </div>
+      <p class="lede" id="res-note" style="margin-top:14px"></p>
+      <div style="height:12px"></div>
+      <button id="res-next" class="primary">PROCEED</button>
+    </div>
+  </section>
+
+  <!-- =========================================================== GRADUATE -->
+  <section class="screen" data-screen="final">
+    <div class="card">
+      <p class="kicker">Certificate of Total Signal</p>
+      <h2 id="fin-title">TOTAL SIGNAL</h2>
+      <hr class="rule">
+      <div class="readout">
+        <div><b id="fin-score">0</b><span>FINAL SCORE</span></div>
+        <div><b id="fin-grade">S</b><span>GRADE</span></div>
+        <div><b id="fin-best">0</b><span>BEST EVER</span></div>
+      </div>
+      <p class="lede" id="fin-note" style="margin-top:14px"></p>
+      <p class="mono-tag" style="margin-top:10px">RANK CONFERRED &middot; PROFESSOR OF TOTAL SIGNAL</p>
+      <div style="height:12px"></div>
+      <button id="fin-again" class="primary">ENROL AGAIN</button>
+      <button id="fin-menu" class="ghost" style="margin-left:8px">TITLE</button>
+    </div>
+  </section>
+
+</main>
+
+<div id="chrome">
+  <button id="mute" aria-pressed="false">AUDIO ON</button>
+</div>
+
+<div id="glass" aria-hidden="true"></div>
+<p id="live" class="sr" role="status" aria-live="polite"></p>
+
+<script src="js/lessons.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
